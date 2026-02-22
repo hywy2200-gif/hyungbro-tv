@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>형브로TV 전략 메모</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #FFD700;
+    --gold-dim: #B8960C;
+    --red: #FF3B3B;
+    --bg: #0A0A0F;
+    --bg2: #111118;
+    --bg3: #1A1A24;
+    --border: rgba(255,215,0,0.15);
+    --text: #F0F0F0;
+    --text-dim: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    padding: 32px 20px 60px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .header::before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--gold);
+    margin: 0 auto 16px;
+  }
+
+  .header-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .header h1 {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+
+  .header h1 span { color: var(--gold); }
+
+  .header-sub {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  /* Grid layout */
+  .grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 14px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: rgba(255,215,0,0.4); }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  .card.red::before { background: linear-gradient(90deg, var(--red), transparent); }
+  .card.blue::before { background: linear-gradient(90deg, #4A9EFF, transparent); }
+  .card.green::before { background: linear-gradient(90deg, #4AFFA0, transparent); }
+  .card.purple::before { background: linear-gradient(90deg, #A04AFF, transparent); }
+
+  .card-num {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+
+  .card.red .card-num { color: var(--red); }
+  .card.blue .card-num { color: #4A9EFF; }
+  .card.green .card-num { color: #4AFFA0; }
+  .card.purple .card-num { color: #A04AFF; }
+
+  .card-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 17px;
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+
+  /* Span helpers */
+  .col-4 { grid-column: span 4; }
+  .col-6 { grid-column: span 6; }
+  .col-8 { grid-column: span 8; }
+  .col-12 { grid-column: span 12; }
+  .col-3 { grid-column: span 3; }
+
+  @media (max-width: 768px) {
+    .col-4, .col-6, .col-8, .col-3 { grid-column: span 12; }
+  }
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .col-4, .col-3 { grid-column: span 6; }
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    background: rgba(255,215,0,0.1);
+    border: 1px solid rgba(255,215,0,0.25);
+    color: var(--gold);
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    margin: 3px 2px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .tag.red { background: rgba(255,59,59,0.1); border-color: rgba(255,59,59,0.3); color: #FF6B6B; }
+  .tag.blue { background: rgba(74,158,255,0.1); border-color: rgba(74,158,255,0.3); color: #4A9EFF; }
+  .tag.green { background: rgba(74,255,160,0.1); border-color: rgba(74,255,160,0.3); color: #4AFFA0; }
+
+  /* Rows */
+  .row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .row:last-child { border-bottom: none; }
+
+  .row-icon {
+    font-size: 16px;
+    min-width: 24px;
+    margin-top: 1px;
+  }
+
+  .row-label {
+    color: var(--gold);
+    font-weight: 700;
+    min-width: 70px;
+    font-size: 12px;
+  }
+
+  .row-text { color: #CCC; flex: 1; }
+
+  /* Step flow */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    position: relative;
+    padding-bottom: 16px;
+  }
+
+  .step:last-child { padding-bottom: 0; }
+
+  .step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 32px;
+  }
+
+  .step-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 13px;
+    color: var(--gold);
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .step-line {
+    width: 2px;
+    flex: 1;
+    background: linear-gradient(to bottom, var(--gold-dim), transparent);
+    margin-top: 4px;
+    min-height: 20px;
+  }
+
+  .step:last-child .step-line { display: none; }
+
+  .step-content { padding-top: 4px; }
+  .step-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; color: var(--text); }
+  .step-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+  .step-time { font-size: 11px; color: var(--gold); font-weight: 700; margin-top: 2px; }
+
+  /* Table */
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .mini-table th {
+    background: rgba(255,215,0,0.08);
+    color: var(--gold);
+    padding: 7px 10px;
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mini-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: #CCC;
+    vertical-align: top;
+  }
+  .mini-table tr:last-child td { border-bottom: none; }
+  .mini-table .day { color: var(--gold); font-weight: 700; font-size: 11px; }
+  .mini-table .cat { color: #4A9EFF; font-size: 11px; }
+
+  /* Hook compare */
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1fr 24px 1fr;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 12px;
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-orig { color: var(--text-dim); }
+  .compare-arrow { text-align: center; color: var(--gold); font-size: 14px; }
+  .compare-new { color: var(--text); font-weight: 700; }
+
+  /* Big number */
+  .big-stat {
+    text-align: center;
+    padding: 10px 0;
+  }
+  .big-stat .num {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 40px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .big-stat .unit { font-size: 11px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; }
+
+  /* Divider label */
+  .section-label {
+    grid-column: span 12;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    margin-bottom: -4px;
+  }
+  .section-label span {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .section-label::before, .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+  }
+
+  /* Highlight box */
+  .highlight {
+    background: rgba(255,215,0,0.06);
+    border: 1px solid rgba(255,215,0,0.2);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 10px;
+    color: #DDD;
+  }
+  .highlight strong { color: var(--gold); }
+
+  /* Hashtag wrap */
+  .hashtags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .ht {
+    background: var(--bg3);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #4A9EFF;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+
+  /* Pulse dot */
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    background: var(--red);
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 1.5s infinite;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Strategy Memo · 2026</div>
+  <h1>형브로TV<br><span>채널 리모델링 전략</span></h1>
+  <div class="header-sub">머스크의모든것 벤치마킹 × 재테크/경제 쇼츠</div>
+</div>
+
+<div class="grid">
+
+  <!-- 핵심 방향 -->
+  <div class="card col-12">
+    <div class="card-num">CORE CONCEPT</div>
+    <div class="card-title">💡 한 줄 전략</div>
+    <div class="highlight">
+      <strong>머스크의모든것</strong>이 "머스크"라는 IP로 모든 이슈를 빨아들이듯,<br>
+      형브로TV는 <strong>"당신의 지갑"</strong>이라는 구심점으로 모든 경제 이슈를 귀결시킨다.<br>
+      → 모든 콘텐츠는 <strong>"그래서 내 돈과 무슨 상관인가?"</strong>로 끝난다.
+    </div>
+  </div>
+
+  <!-- Section: 제작 프로세스 -->
+  <div class="section-label"><span>01 · 제작 프로세스</span></div>
+
+  <div class="card col-6">
+    <div class="card-num">WORKFLOW</div>
+    <div class="card-title">⚡ 1편 제작 흐름</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-left"><div class="step-dot">1</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">경제 뉴스 체크</div>
+          <div class="step-desc">네이버 경제 + 구글 트렌드 모니터링</div>
+          <div class="step-time">⏱ 10분</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-dot">2</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">Claude 대본 작성</div>
+          <div class="step-desc">HICC 구조 45초 쇼츠 대본 요청</div>
+          <div class="step-time">⏱ 5분</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-dot">3</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">타입캐스트 음성 생성</div>
+          <div class="step-desc">민준/도윤 목소리 → MP3 다운로드</div>
+          <div class="step-time">⏱ 10분</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-dot">4</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">캡컷 편집</div>
+          <div class="step-desc">자동자막 + 스톡영상 + BGM + 효과음</div>
+          <div class="step-time">⏱ 30~40분</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-dot">5</div><div class="step-line"></div></div>
+        <div class="step-content">
+          <div class="step-title">유튜브 업로드</div>
+          <div class="step-desc">제목 · 해시태그 · 고정댓글 설정</div>
+          <div class="step-time">⏱ 5분</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card col-6">
+    <div class="card-num">HICC STRUCTURE</div>
+    <div class="card-title">📝 대본 4단계 구조</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-left"><div class="step-dot" style="border-color:#FF3B3B;color:#FF3B3B;">H</div><div class="step-line" style="background:linear-gradient(to bottom,#FF3B3B,transparent)"></div></div>
+        <div class="step-content">
+          <div class="step-title" style="color:#FF6B6B;">Hook · 0~3초</div>
+          <div class="step-desc">"금융권이 발칵 뒤집혔습니다"<br>→ 호기심 또는 위기감 자극</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-dot" style="border-color:#4A9EFF;color:#4A9EFF;">I</div><div class="step-line" style="background:linear-gradient(to bottom,#4A9EFF,transparent)"></div></div>
+        <div class="step-content">
+          <div class="step-title" style="color:#4A9EFF;">Issue · 4~15초</div>
+          <div class="step-desc">충격적 사실 / 질문 제시<br>→ "왜 이런 일이 생겼을까요?"</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-dot" style="border-color:#FFD700;color:#FFD700;">C</div><div class="step-line" style="background:linear-gradient(to bottom,#FFD700,transparent)"></div></div>
+        <div class="step-content">
+          <div class="step-title" style="color:#FFD700;">Core · 16~35초</div>
+          <div class="step-desc">핵심 근거 + 현황 3가지<br>→ 최신 통계/뉴스 기반</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-dot" style="border-color:#4AFFA0;color:#4AFFA0;">C</div></div>
+        <div class="step-content">
+          <div class="step-title" style="color:#4AFFA0;">Call · 36~45초</div>
+          <div class="step-desc">미래 예측 + 댓글 유도 + 구독 CTA</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: 편집 스타일 -->
+  <div class="section-label"><span>02 · 편집 스타일</span></div>
+
+  <div class="card col-4">
+    <div class="card-num">VISUAL</div>
+    <div class="card-title">🎬 캡컷 편집 세팅</div>
+    <div class="row"><div class="row-icon">📐</div><div><div class="row-label">비율</div><div class="row-text">9:16 · 1080×1920 · 30fps</div></div></div>
+    <div class="row"><div class="row-icon">✂️</div><div><div class="row-label">컷 주기</div><div class="row-text">1~1.5초마다 컷 전환</div></div></div>
+    <div class="row"><div class="row-icon">🔤</div><div><div class="row-label">폰트</div><div class="row-text">프리텐다드 ExtraBold</div></div></div>
+    <div class="row"><div class="row-icon">🎨</div><div><div class="row-label">자막색</div><div class="row-text">기본 흰색 · 강조 <span style="color:#FFD700">노란색</span>/<span style="color:#FF3B3B">빨간색</span></div></div></div>
+    <div class="row"><div class="row-icon">📍</div><div><div class="row-label">자막위치</div><div class="row-text">화면 중앙 (하단 X)</div></div></div>
+    <div class="row"><div class="row-icon">💫</div><div><div class="row-label">애니</div><div class="row-text">Pop · Bounce 효과</div></div></div>
+    <div class="row"><div class="row-icon">🔀</div><div><div class="row-label">전환</div><div class="row-text">Slide 또는 Flash 하나로 고정</div></div></div>
+  </div>
+
+  <div class="card col-4 blue">
+    <div class="card-num">AUDIO</div>
+    <div class="card-title">🎵 오디오 가이드</div>
+    <div class="row"><div class="row-icon">🎬</div><div><div class="row-label">BGM 장르</div><div class="row-text">Cinematic · Corporate Tension</div></div></div>
+    <div class="row"><div class="row-icon">📈</div><div><div class="row-label">BGM 흐름</div><div class="row-text">오프닝 강 → 본론 잔잔 → 마무리 고조</div></div></div>
+    <div class="row"><div class="row-icon">🔊</div><div><div class="row-label">효과음</div><div class="row-text">숫자 등장 시 cash register · whoosh</div></div></div>
+    <div class="row"><div class="row-icon">🎙️</div><div><div class="row-label">추천 목소리</div><div class="row-text">타입캐스트 <strong style="color:#4A9EFF">민준</strong> / <strong style="color:#4A9EFF">도윤</strong></div></div></div>
+    <div class="row"><div class="row-icon">⚡</div><div><div class="row-label">속도 설정</div><div class="row-text">훅 1.0× · 본론 1.05× · CTA 1.0×</div></div></div>
+    <div class="row"><div class="row-icon">🎭</div><div><div class="row-label">감정 설정</div><div class="row-text">훅 강조 → 본론 차분 → CTA 친근</div></div></div>
+  </div>
+
+  <div class="card col-4 green">
+    <div class="card-num">FOOTAGE</div>
+    <div class="card-title">🎥 영상 소스</div>
+    <div class="row"><div class="row-icon">🆓</div><div><div class="row-label">Pexels</div><div class="row-text">증시·달러·빌딩·타임랩스 무료</div></div></div>
+    <div class="row"><div class="row-icon">🆓</div><div><div class="row-label">Pixabay</div><div class="row-text">상업 이용 무제한 무료</div></div></div>
+    <div class="row"><div class="row-icon">📱</div><div><div class="row-label">캡컷 스톡</div><div class="row-text">내장 stock 탭 → 바로 사용</div></div></div>
+    <div class="row"><div class="row-icon">▶️</div><div><div class="row-label">공식 채널</div><div class="row-text">테슬라·한국은행 YT 영상 활용</div></div></div>
+    <div style="margin-top:14px">
+      <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;letter-spacing:1px">추천 키워드 검색어</div>
+      <span class="tag">뉴욕 증시</span>
+      <span class="tag">달러 지폐</span>
+      <span class="tag">금 금괴</span>
+      <span class="tag">도심 타임랩스</span>
+      <span class="tag">주식 차트</span>
+      <span class="tag">비트코인</span>
+    </div>
+  </div>
+
+  <!-- Section: 콘텐츠 전략 -->
+  <div class="section-label"><span>03 · 콘텐츠 전략</span></div>
+
+  <div class="card col-8">
+    <div class="card-num">CONTENT CALENDAR</div>
+    <div class="card-title">📅 주간 콘텐츠 캘린더</div>
+    <table class="mini-table">
+      <thead><tr><th>요일</th><th>카테고리</th><th>예시 제목</th></tr></thead>
+      <tbody>
+        <tr><td class="day">월</td><td class="cat">글로벌 부자 스토리</td><td>워런 버핏이 20대에 절대 안 한 것</td></tr>
+        <tr><td class="day">화</td><td class="cat">실용 재테크</td><td>월 50만원으로 5년 안에 1억 모으는 법</td></tr>
+        <tr><td class="day">수</td><td class="cat">경제 뉴스 해석</td><td>금리 동결, 내 대출에 무슨 의미인가</td></tr>
+        <tr><td class="day">목</td><td class="cat">투자 심리/마인드</td><td>부자들이 폭락장에서 하는 행동 3가지</td></tr>
+        <tr><td class="day">금</td><td class="cat">트렌드/AI/기술</td><td>AI가 없애버릴 직업, 당신은 안전한가요?</td></tr>
+        <tr><td class="day">토</td><td class="cat">주간 정리</td><td>이번 주 절대 놓치면 안 될 경제 뉴스 TOP3</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight" style="margin-top:12px">
+      <strong>시의성 원칙:</strong> 핫한 이슈 발생 시 <strong>6시간 이내</strong> 업로드 목표.<br>
+      업로드 최적 시간: <strong>오전 7~9시</strong> 또는 <strong>저녁 8~10시</strong>
+    </div>
+  </div>
+
+  <div class="card col-4">
+    <div class="card-num">UPLOAD STRATEGY</div>
+    <div class="card-title">📊 업로드 전략</div>
+    <div class="big-stat">
+      <div class="num">4~5</div>
+      <div class="unit">쇼츠 / 주 (초반 목표)</div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:12px 0"></div>
+    <div class="row"><div class="row-icon">🎯</div><div><div class="row-label">핵심 원칙</div><div class="row-text">초반엔 퀄리티보다 <strong style="color:#FFD700">일관성</strong>이 우선</div></div></div>
+    <div class="row"><div class="row-icon">📌</div><div><div class="row-label">고정댓글</div><div class="row-text">"이 영상 요약: ..." 본인이 직접 달기</div></div></div>
+    <div class="row"><div class="row-icon">💬</div><div><div class="row-label">CTA 멘트</div><div class="row-text">"여러분은 어떻게 생각하세요?"로 댓글 유도</div></div></div>
+  </div>
+
+  <!-- Section: 훅 & SEO -->
+  <div class="section-label"><span>04 · 훅 문장 & SEO</span></div>
+
+  <div class="card col-6 red">
+    <div class="card-num">HOOK TRANSLATION</div>
+    <div class="card-title">🎣 훅 문장 변환 공식</div>
+    <div class="compare-row" style="padding-top:0">
+      <div style="font-size:10px;color:var(--text-dim);letter-spacing:1px">머스크의모든것</div>
+      <div></div>
+      <div style="font-size:10px;color:var(--gold);letter-spacing:1px">형브로TV 버전</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-orig">일론 머스크가 결국 해냈습니다</div>
+      <div class="compare-arrow">→</div>
+      <div class="compare-new">대한민국 직장인들이 결국 당했습니다</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-orig">이건 테슬라의 종말일까요?</div>
+      <div class="compare-arrow">→</div>
+      <div class="compare-new">이건 당신 월급의 종말일까요?</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-orig">미국이 발칵 뒤집혔습니다</div>
+      <div class="compare-arrow">→</div>
+      <div class="compare-new">금융권이 발칵 뒤집혔습니다</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-orig">삼성도 긴장하는 이유</div>
+      <div class="compare-arrow">→</div>
+      <div class="compare-new">부자들이 조용히 움직이는 이유</div>
+    </div>
+  </div>
+
+  <div class="card col-6">
+    <div class="card-num">TITLE PATTERNS</div>
+    <div class="card-title">📢 제목 5가지 공식</div>
+    <div class="row"><div class="row-icon">⚠️</div><div><div class="row-label">경고형</div><div class="row-text">지금 당장 바꾸지 않으면 10년 후 후회합니다</div></div></div>
+    <div class="row"><div class="row-icon">🔓</div><div><div class="row-label">폭로형</div><div class="row-text">은행이 절대 알려주지 않는 이자의 비밀</div></div></div>
+    <div class="row"><div class="row-icon">⚖️</div><div><div class="row-label">대비형</div><div class="row-text">같은 월급인데 10년 후 완전히 다른 삶</div></div></div>
+    <div class="row"><div class="row-icon">🔢</div><div><div class="row-label">숫자형</div><div class="row-text">월 30만원으로 노후 3억 만드는 공식</div></div></div>
+    <div class="row"><div class="row-icon">📰</div><div><div class="row-label">뉴스반응</div><div class="row-text">코스피 폭락, 지금 사야 할까 팔아야 할까</div></div></div>
+  </div>
+
+  <div class="card col-12">
+    <div class="card-num">HASHTAGS & SEO</div>
+    <div class="card-title">🏷️ 고정 해시태그 세트</div>
+    <div class="hashtags">
+      <span class="ht">#재테크</span>
+      <span class="ht">#경제</span>
+      <span class="ht">#돈버는법</span>
+      <span class="ht">#주식</span>
+      <span class="ht">#부동산</span>
+      <span class="ht">#경제공부</span>
+      <span class="ht">#재테크공부</span>
+      <span class="ht">#머니트렌드</span>
+      <span class="ht">#금융</span>
+      <span class="ht">#투자</span>
+      <span class="ht">#Shorts</span>
+      <span class="ht">#경제뉴스</span>
+      <span class="ht">#형브로TV</span>
+    </div>
+  </div>
+
+  <!-- Section: 로드맵 -->
+  <div class="section-label"><span>05 · 성장 로드맵</span></div>
+
+  <div class="card col-3">
+    <div class="card-num">MONTH 1</div>
+    <div class="card-title" style="color:#FF6B6B;">🚀 1~4주차</div>
+    <div style="font-size:12px;color:#CCC;line-height:1.8">
+      ✅ 채널 아트 정비<br>
+      ✅ 채널 설명 업데이트<br>
+      ✅ 쇼츠 10개 업로드<br>
+      ✅ 편집 스타일 고정<br>
+      ✅ 업로드 루틴 확립
+    </div>
+  </div>
+
+  <div class="card col-3">
+    <div class="card-num">MONTH 2</div>
+    <div class="card-title" style="color:#FFD700;">📈 5~8주차</div>
+    <div style="font-size:12px;color:#CCC;line-height:1.8">
+      ✅ 반응 좋은 유형 분석<br>
+      ✅ 인기 주제 집중 생산<br>
+      ✅ 댓글 소통 강화<br>
+      ✅ 업로드 주 5회 도전<br>
+      ✅ 시의성 콘텐츠 강화
+    </div>
+  </div>
+
+  <div class="card col-3">
+    <div class="card-num">MONTH 3</div>
+    <div class="card-title" style="color:#4AFFA0;">🎯 9~12주차</div>
+    <div style="font-size:12px;color:#CCC;line-height:1.8">
+      ✅ 롱폼 영상 1~2개 추가<br>
+      ✅ 쇼츠 → 롱폼 유입 설계<br>
+      ✅ 커뮤니티 탭 활성화<br>
+      ✅ 채널 아이덴티티 완성<br>
+      ✅ 협업/콜라보 시도
+    </div>
+  </div>
+
+  <div class="card col-3 purple">
+    <div class="card-num">MONETIZE</div>
+    <div class="card-title" style="color:#A04AFF;">💰 수익화 준비</div>
+    <div style="font-size:12px;color:#CCC;line-height:1.8">
+      ✅ 유튜브 파트너 프로그램<br>
+      ✅ 멤버십 채널 개설<br>
+      ✅ 경제 전자책 출판<br>
+      ✅ 협찬/브랜드 딜<br>
+      ✅ 오픈카톡 커뮤니티
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span class="live-dot"></span>
+  형브로TV × 머스크의모든것 벤치마킹 전략 · 2026
+</div>
+
+</body>
+</html>
