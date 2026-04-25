@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>형브로TV | 캐빈워시 시리즈 전체 스크립트</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #F0D080;
+  --gold-dim: #6A5520;
+  --black: #080808;
+  --dark: #101010;
+  --dark2: #161616;
+  --dark3: #1C1C1C;
+  --white: #F0EFE8;
+  --gray: #777;
+  --red: #E03030;
+  --step1: #C9A84C;
+  --step2: #7EB8D4;
+  --step3: #E07050;
+  --step4: #80C080;
+  --step5: #C070C0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Noto Sans KR', sans-serif;
+  min-height: 100vh;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  background: var(--dark);
+  border-bottom: 1px solid #1a1a1a;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-logo {
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: 18px;
+  color: var(--gold);
+  letter-spacing: 2px;
+}
+
+.topbar-series {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+}
+
+.topbar-right {
+  font-size: 11px;
+  color: #444;
+  letter-spacing: 2px;
+}
+
+/* ── EPISODE NAV ── */
+.ep-nav {
+  background: var(--dark2);
+  border-bottom: 1px solid #1a1a1a;
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0 16px;
+}
+
+.ep-nav::-webkit-scrollbar { display: none; }
+
+.ep-btn {
+  flex-shrink: 0;
+  padding: 14px 20px;
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #444;
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+
+.ep-btn:hover { color: var(--gold-dim); }
+.ep-btn.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+/* ── MAIN LAYOUT ── */
+.main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+/* ── EPISODE PANEL ── */
+.ep-panel { display: none; }
+.ep-panel.active { display: block; }
+
+/* ── EP HEADER ── */
+.ep-header {
+  margin-bottom: 36px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #1e1e1e;
+  position: relative;
+}
+
+.ep-badge {
+  display: inline-block;
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 5px 14px;
+  margin-bottom: 16px;
+}
+
+.ep-main-title {
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: clamp(24px, 4vw, 38px);
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+.ep-main-title .g { color: var(--gold); }
+
+.ep-meta-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ep-meta-item {
+  font-size: 12px;
+  color: var(--gray);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ep-meta-item .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  display: inline-block;
+}
+
+.ep-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.ep-tag {
+  font-size: 11px;
+  padding: 3px 10px;
+  border: 1px solid #252525;
+  color: #555;
+  letter-spacing: 1px;
+}
+
+/* ── SCRIPT STEPS ── */
+.step-block {
+  margin-bottom: 20px;
+  border: 1px solid #1a1a1a;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.step-block:hover { border-color: #2a2a2a; }
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: var(--dark2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.step-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #444;
+  flex-shrink: 0;
+}
+
+.step-label {
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.step-timing {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  color: #444;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.step-body {
+  padding: 24px 24px 24px 24px;
+  background: var(--dark);
+  border-top: 1px solid #1a1a1a;
+}
+
+.script-line {
+  font-size: 15px;
+  line-height: 2;
+  font-weight: 400;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.script-line.bold { font-weight: 700; font-size: 16px; }
+.script-line.sub { color: #888; font-size: 13px; font-weight: 300; }
+
+.script-direction {
+  display: inline-block;
+  font-size: 11px;
+  color: #555;
+  font-style: italic;
+  background: #161616;
+  padding: 3px 10px;
+  margin: 6px 0;
+  border-left: 2px solid var(--gold-dim);
+}
+
+.step-color-1 { color: var(--step1); }
+.step-color-2 { color: var(--step2); }
+.step-color-3 { color: var(--step3); }
+.step-color-4 { color: var(--step4); }
+.step-color-5 { color: var(--step5); }
+
+.bar-1 { background: var(--step1); }
+.bar-2 { background: var(--step2); }
+.bar-3 { background: var(--step3); }
+.bar-4 { background: var(--step4); }
+.bar-5 { background: var(--step5); }
+
+.step-bar {
+  width: 3px;
+  height: 100%;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.step-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
+/* ── HIGHLIGHT WORD ── */
+.hl { color: var(--gold); font-weight: 700; }
+.hl-r { color: var(--red); font-weight: 700; }
+.hl-b { color: var(--step2); font-weight: 700; }
+
+/* ── BOTTOM META ── */
+.ep-footer {
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid #1a1a1a;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 560px) {
+  .ep-footer { grid-template-columns: 1fr; }
+}
+
+.ep-footer-box {
+  background: var(--dark2);
+  padding: 20px;
+  border: 1px solid #1e1e1e;
+}
+
+.ep-footer-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--gold-dim);
+  margin-bottom: 10px;
+}
+
+.ep-footer-content {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.9;
+  font-weight: 300;
+}
+
+.ep-footer-content .v { color: var(--white); font-weight: 500; }
+
+/* ── PROGRESS BAR ── */
+.timeline {
+  display: flex;
+  gap: 0;
+  margin-bottom: 32px;
+  border: 1px solid #1a1a1a;
+  overflow: hidden;
+}
+
+.tl-step {
+  flex: 1;
+  text-align: center;
+  padding: 10px 6px;
+  font-size: 10px;
+  border-right: 1px solid #1a1a1a;
+  position: relative;
+}
+
+.tl-step:last-child { border-right: none; }
+
+.tl-step-name {
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.tl-step-sec {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  color: #444;
+}
+
+/* ── NAV ARROWS ── */
+.ep-nav-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 48px;
+  gap: 16px;
+}
+
+.nav-btn {
+  flex: 1;
+  padding: 14px 20px;
+  background: var(--dark2);
+  border: 1px solid #222;
+  color: var(--gray);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.nav-btn:hover {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+}
+
+.nav-btn.disabled {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.nav-btn .arrow { font-size: 18px; display: block; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">형브로TV</div>
+  <div class="topbar-series">CABIN WARSH SERIES · 전체 스크립트</div>
+  <div class="topbar-right">EP 01–08</div>
+</div>
+
+<div class="ep-nav" id="epNav">
+  <button class="ep-btn active" onclick="showEp(0)">EP.01</button>
+  <button class="ep-btn" onclick="showEp(1)">EP.02</button>
+  <button class="ep-btn" onclick="showEp(2)">EP.03</button>
+  <button class="ep-btn" onclick="showEp(3)">EP.04</button>
+  <button class="ep-btn" onclick="showEp(4)">EP.05</button>
+  <button class="ep-btn" onclick="showEp(5)">EP.06</button>
+  <button class="ep-btn" onclick="showEp(6)">EP.07</button>
+  <button class="ep-btn" onclick="showEp(7)">EP.08</button>
+</div>
+
+<div class="main">
+
+<!-- ══════════════════════════════════════════
+     EP 01
+══════════════════════════════════════════ -->
+<div class="ep-panel active" id="ep0">
+  <div class="ep-header">
+    <div class="ep-badge">EPISODE 01 · 시리즈 오프너</div>
+    <h1 class="ep-main-title">트럼프가 돌아왔다,<br><span class="g">금리도 흔들린다</span></h1>
+    <div class="ep-meta-row">
+      <div class="ep-meta-item"><span class="dot"></span> 45초 숏폼</div>
+      <div class="ep-meta-item"><span class="dot"></span> 연준 독립성 · 트럼프 압박</div>
+      <div class="ep-meta-item"><span class="dot"></span> 시리즈 입문편</div>
+    </div>
+    <div class="ep-tags">
+      <span class="ep-tag">#금리예측</span>
+      <span class="ep-tag">#트럼프경제</span>
+      <span class="ep-tag">#연준금리</span>
+      <span class="ep-tag">#캐빈워시시리즈</span>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step1)">HOOK</div><div class="tl-step-sec">0–5초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step2)">배경</div><div class="tl-step-sec">5–15초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step3)">핵심</div><div class="tl-step-sec">15–30초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step4)">인사이트</div><div class="tl-step-sec">30–40초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step5)">CTA</div><div class="tl-step-sec">40–45초</div></div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header">
+      <div class="step-bar bar-1"></div>
+      <div class="step-header-inner">
+        <span class="step-num">STEP 01</span>
+        <span class="step-label step-color-1">🔥 HOOK</span>
+        <span class="step-timing">0–5초</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="script-direction">📸 화면: 트럼프 취임식 + 연준 건물 이미지 교차</div>
+      <p class="script-line bold">"트럼프가 대통령이 됐습니다."</p>
+      <p class="script-line bold">"그 순간부터 <span class="hl">여러분의 대출이자</span>가 흔들리기 시작했습니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header">
+      <div class="step-bar bar-2"></div>
+      <div class="step-header-inner">
+        <span class="step-num">STEP 02</span>
+        <span class="step-label step-color-2">📖 배경</span>
+        <span class="step-timing">5–15초</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="script-direction">📊 화면: 미국 기준금리 차트 애니메이션</div>
+      <p class="script-line">"미국 연준은 세계 금리의 기준입니다."</p>
+      <p class="script-line">"근데 트럼프는 취임 직후 이렇게 말했습니다."</p>
+      <p class="script-line bold">"<span class="hl-r">금리를 내려라.</span> 내가 너희보다 금리를 더 잘 안다."</p>
+      <p class="script-line sub">→ 실제 트럼프 발언 자막 처리</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header">
+      <div class="step-bar bar-3"></div>
+      <div class="step-header-inner">
+        <span class="step-num">STEP 03</span>
+        <span class="step-label step-color-3">⚡ 핵심</span>
+        <span class="step-timing">15–30초</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="script-direction">📌 화면: 연준 독립성 키워드 자막</div>
+      <p class="script-line">"원래 연준은 <span class="hl">대통령도 건드릴 수 없는</span> 독립 기관입니다."</p>
+      <p class="script-line">"왜냐면, 대통령이 금리를 마음대로 내리면?"</p>
+      <p class="script-line bold">"경기는 단기적으로 좋아 보이지만 — <span class="hl-r">물가가 폭등합니다.</span>"</p>
+      <p class="script-line">"1970년대 닉슨이 연준에 압력을 넣었을 때, 그 결과가 <span class="hl-r">오일쇼크급 인플레이션</span>이었습니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header">
+      <div class="step-bar bar-4"></div>
+      <div class="step-header-inner">
+        <span class="step-num">STEP 04</span>
+        <span class="step-label step-color-4">💡 인사이트</span>
+        <span class="step-timing">30–40초</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="script-direction">💰 화면: 대출이자 · 전세대출 · 주식 그래픽</div>
+      <p class="script-line">"트럼프가 연준을 흔들면 — 금리는 예측 불가가 됩니다."</p>
+      <p class="script-line bold">"이게 왜 <span class="hl">우리 돈</span>과 직결되냐고요?"</p>
+      <p class="script-line">"미국 금리가 오르면 → 한국 금리도 따라 올라야 합니다."</p>
+      <p class="script-line">"그 말은 <span class="hl">여러분 대출이자, 전세금, 주식 수익률</span> — 전부 영향받는다는 뜻입니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header">
+      <div class="step-bar bar-5"></div>
+      <div class="step-header-inner">
+        <span class="step-num">STEP 05</span>
+        <span class="step-label step-color-5">📣 CTA</span>
+        <span class="step-timing">40–45초</span>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="script-direction">🎬 화면: 다음 편 예고 자막 + 형브로TV 로고</div>
+      <p class="script-line bold">"그럼 실제로 금리는 어디로 갈까요?"</p>
+      <p class="script-line">"다음 편에서는 트럼프가 연준 의장 자리에 꽂으려는 <span class="hl">그 사람</span>을 파헤칩니다."</p>
+      <p class="script-line sub">저장해두시면 다음 편 놓치지 않습니다 👇</p>
+    </div>
+  </div>
+
+  <div class="ep-footer">
+    <div class="ep-footer-box">
+      <div class="ep-footer-label">THUMBNAIL COPY</div>
+      <div class="ep-footer-content">
+        메인: <span class="v">"트럼프가 돌아왔다"</span><br>
+        서브: <span class="v">"금리는 어디로?"</span><br>
+        배지: EP.01 · 캐빈워시 시리즈
+      </div>
+    </div>
+    <div class="ep-footer-box">
+      <div class="ep-footer-label">UPLOAD TIMING</div>
+      <div class="ep-footer-content">
+        업로드: <span class="v">1주차 화요일</span><br>
+        최적 시간: <span class="v">오후 7–9시</span><br>
+        커뮤니티: 시리즈 예고 포스팅 선행
+      </div>
+    </div>
+  </div>
+
+  <div class="ep-nav-btns">
+    <button class="nav-btn disabled"><span class="arrow">←</span>이전 에피소드</button>
+    <button class="nav-btn" onclick="showEp(1)"><span class="arrow">→</span>EP.02 · 케빈 워시는 누구인가</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EP 02
+══════════════════════════════════════════ -->
+<div class="ep-panel" id="ep1">
+  <div class="ep-header">
+    <div class="ep-badge">EPISODE 02 · 인물 집중 분석</div>
+    <h1 class="ep-main-title"><span class="g">케빈 워시,</span><br>그는 누구인가?</h1>
+    <div class="ep-meta-row">
+      <div class="ep-meta-item"><span class="dot"></span> 45초 숏폼</div>
+      <div class="ep-meta-item"><span class="dot"></span> 케빈 워시 프로필 · 매파 성향</div>
+    </div>
+    <div class="ep-tags">
+      <span class="ep-tag">#케빈워시</span>
+      <span class="ep-tag">#연준의장</span>
+      <span class="ep-tag">#캐빈워시시리즈</span>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step1)">HOOK</div><div class="tl-step-sec">0–5초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step2)">배경</div><div class="tl-step-sec">5–15초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step3)">핵심</div><div class="tl-step-sec">15–30초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step4)">인사이트</div><div class="tl-step-sec">30–40초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step5)">CTA</div><div class="tl-step-sec">40–45초</div></div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header">
+      <div class="step-bar bar-1"></div>
+      <div class="step-header-inner"><span class="step-num">STEP 01</span><span class="step-label step-color-1">🔥 HOOK</span><span class="step-timing">0–5초</span></div>
+    </div>
+    <div class="step-body">
+      <div class="script-direction">📸 화면: 케빈 워시 사진 + "차기 연준 의장?" 자막</div>
+      <p class="script-line bold">"이 사람이 연준 의장이 되면 — <span class="hl-r">금리는 오릅니다.</span>"</p>
+      <p class="script-line bold">"트럼프가 점찍은 그 인물, <span class="hl">케빈 워시</span>입니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header">
+      <div class="step-bar bar-2"></div>
+      <div class="step-header-inner"><span class="step-num">STEP 02</span><span class="step-label step-color-2">📖 배경</span><span class="step-timing">5–15초</span></div>
+    </div>
+    <div class="step-body">
+      <div class="script-direction">📊 화면: 케빈 워시 경력 타임라인 인포그래픽</div>
+      <p class="script-line">"케빈 워시 — 스탠퍼드 로스쿨 출신, 모건스탠리 부사장, 부시 행정부 연준 이사."</p>
+      <p class="script-line">"2008년 금융위기 때 <span class="hl">현장에서 직접 뛴</span> 인물입니다."</p>
+      <p class="script-line">"그리고 트럼프 1기 때도 의장 후보로 거론됐었죠."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header">
+      <div class="step-bar bar-3"></div>
+      <div class="step-header-inner"><span class="step-num">STEP 03</span><span class="step-label step-color-3">⚡ 핵심</span><span class="step-timing">15–30초</span></div>
+    </div>
+    <div class="step-body">
+      <div class="script-direction">⚡ 화면: "매파" 키워드 강조 자막</div>
+      <p class="script-line">"그의 핵심 성향 — <span class="hl-r">매파(Hawkish)</span>입니다."</p>
+      <p class="script-line bold">"매파란? 물가 안정을 위해 <span class="hl">금리를 높게 유지하자</span>는 입장."</p>
+      <p class="script-line">"그는 실제로 이렇게 말했습니다 —"</p>
+      <p class="script-line bold">"<span class="hl-r">인플레이션은 암(癌)이다. 저금리는 마약이다.</span>"</p>
+      <p class="script-line sub">→ 워시 발언 인용 자막 처리</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header">
+      <div class="step-bar bar-4"></div>
+      <div class="step-header-inner"><span class="step-num">STEP 04</span><span class="step-label step-color-4">💡 인사이트</span><span class="step-timing">30–40초</span></div>
+    </div>
+    <div class="step-body">
+      <div class="script-direction">💰 화면: 금리 상승 → 대출이자 · 예적금 그래픽</div>
+      <p class="script-line">"워시가 의장이 되면 — 금리 인하 속도가 <span class="hl-r">확 느려지거나 멈춥니다.</span>"</p>
+      <p class="script-line bold">"여러분 입장에서는?"</p>
+      <p class="script-line">"주택담보대출 이자 부담 ↑ — 주식 성장주 타격 ↑ — 반면 <span class="hl">예금 이자는 올라갑니다.</span>"</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header">
+      <div class="step-bar bar-5"></div>
+      <div class="step-header-inner"><span class="step-num">STEP 05</span><span class="step-label step-color-5">📣 CTA</span><span class="step-timing">40–45초</span></div>
+    </div>
+    <div class="step-body">
+      <div class="script-direction">🎬 화면: 다음 편 예고 자막</div>
+      <p class="script-line bold">"그런데 이상한 점이 있습니다."</p>
+      <p class="script-line">"트럼프는 금리를 <span class="hl-r">내리라</span>고 했는데 — 왜 금리를 <span class="hl-r">올릴 사람</span>을 의장으로 세우려 할까요?"</p>
+      <p class="script-line sub">다음 편에서 이 모순을 파헤칩니다 👇</p>
+    </div>
+  </div>
+
+  <div class="ep-footer">
+    <div class="ep-footer-box">
+      <div class="ep-footer-label">THUMBNAIL COPY</div>
+      <div class="ep-footer-content">메인: <span class="v">"이 남자가 의장되면"</span><br>서브: <span class="v">"금리는 오른다"</span><br>배지: EP.02 · 케빈 워시 분석</div>
+    </div>
+    <div class="ep-footer-box">
+      <div class="ep-footer-label">UPLOAD TIMING</div>
+      <div class="ep-footer-content">업로드: <span class="v">1주차 목요일</span><br>최적 시간: <span class="v">오후 7–9시</span></div>
+    </div>
+  </div>
+
+  <div class="ep-nav-btns">
+    <button class="nav-btn" onclick="showEp(0)"><span class="arrow">←</span>EP.01 · 시리즈 오프너</button>
+    <button class="nav-btn" onclick="showEp(2)"><span class="arrow">→</span>EP.03 · 워시 의장 금리 시나리오</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EP 03
+══════════════════════════════════════════ -->
+<div class="ep-panel" id="ep2">
+  <div class="ep-header">
+    <div class="ep-badge">EPISODE 03 · 매파 시나리오</div>
+    <h1 class="ep-main-title">워시가 의장이 되면<br><span class="g">금리는 오른다?</span></h1>
+    <div class="ep-meta-row">
+      <div class="ep-meta-item"><span class="dot"></span> 45초 숏폼</div>
+      <div class="ep-meta-item"><span class="dot"></span> 매파 정책 · 금리 시나리오</div>
+    </div>
+    <div class="ep-tags"><span class="ep-tag">#매파정책</span><span class="ep-tag">#금리시나리오</span><span class="ep-tag">#투자전략</span></div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step1)">HOOK</div><div class="tl-step-sec">0–5초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step2)">배경</div><div class="tl-step-sec">5–15초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step3)">핵심</div><div class="tl-step-sec">15–30초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step4)">인사이트</div><div class="tl-step-sec">30–40초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step5)">CTA</div><div class="tl-step-sec">40–45초</div></div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-1"></div><div class="step-header-inner"><span class="step-num">STEP 01</span><span class="step-label step-color-1">🔥 HOOK</span><span class="step-timing">0–5초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📊 화면: 금리 상승 그래프 + 빨간 화살표</div>
+      <p class="script-line bold">"케빈 워시가 연준 의장이 된다면 —"</p>
+      <p class="script-line bold">"금리 인하? <span class="hl-r">기대하지 마세요.</span>"</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-2"></div><div class="step-header-inner"><span class="step-num">STEP 02</span><span class="step-label step-color-2">📖 배경</span><span class="step-timing">5–15초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📌 화면: 트럼프↔워시 모순 구도 그래픽</div>
+      <p class="script-line">"트럼프는 금리 인하를 원합니다 — 경기를 띄우기 위해서요."</p>
+      <p class="script-line">"근데 워시는 정반대 입장입니다."</p>
+      <p class="script-line bold">"<span class="hl">인플레이션이 완전히 잡히기 전까지</span> 금리는 내릴 수 없다."</p>
+      <p class="script-line">이 둘이 충돌한다면 — 시장은 <span class="hl-r">패닉</span>에 빠집니다.</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-3"></div><div class="step-header-inner"><span class="step-num">STEP 03</span><span class="step-label step-color-3">⚡ 핵심</span><span class="step-timing">15–30초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">⚡ 화면: 시나리오 A/B 비교 자막</div>
+      <p class="script-line bold">"시나리오 A — 워시가 독립을 지킨다면?"</p>
+      <p class="script-line">금리 동결 또는 소폭 인상 → <span class="hl-r">성장주·코인 하락</span> → 채권 강세</p>
+      <p class="script-line bold" style="margin-top:12px">"시나리오 B — 트럼프 압력에 굴복한다면?"</p>
+      <p class="script-line">억지 금리 인하 → <span class="hl">단기 주식 상승</span> → 하지만 <span class="hl-r">인플레이션 재폭발</span> 위험</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-4"></div><div class="step-header-inner"><span class="step-num">STEP 04</span><span class="step-label step-color-4">💡 인사이트</span><span class="step-timing">30–40초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">💰 화면: 투자 포트폴리오 조정 그래픽</div>
+      <p class="script-line">"워시 체제에서 살아남는 전략은 하나입니다 —"</p>
+      <p class="script-line bold">"<span class="hl">성장주 비중 줄이고</span> — 배당주·금·달러 예금 비중을 늘려라."</p>
+      <p class="script-line">"고금리 환경에서 이자를 먹는 자산이 유리합니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-5"></div><div class="step-header-inner"><span class="step-num">STEP 05</span><span class="step-label step-color-5">📣 CTA</span><span class="step-timing">40–45초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">🎬 화면: 다음 편 예고</div>
+      <p class="script-line bold">"근데 금리 방향을 더 복잡하게 만드는 변수가 있습니다."</p>
+      <p class="script-line">"트럼프의 <span class="hl-r">관세 폭탄</span> — 이게 물가를 또 튀길 수 있습니다."</p>
+      <p class="script-line sub">다음 편에서 관세 → 인플레이션 고리를 설명합니다 👇</p>
+    </div>
+  </div>
+
+  <div class="ep-footer">
+    <div class="ep-footer-box"><div class="ep-footer-label">THUMBNAIL COPY</div><div class="ep-footer-content">메인: <span class="v">"워시 의장 되면"</span><br>서브: <span class="v">"금리 인하 없다"</span></div></div>
+    <div class="ep-footer-box"><div class="ep-footer-label">UPLOAD TIMING</div><div class="ep-footer-content">업로드: <span class="v">2주차 화요일</span></div></div>
+  </div>
+
+  <div class="ep-nav-btns">
+    <button class="nav-btn" onclick="showEp(1)"><span class="arrow">←</span>EP.02 · 케빈 워시 인물 분석</button>
+    <button class="nav-btn" onclick="showEp(3)"><span class="arrow">→</span>EP.04 · 관세 폭탄 인플레이션</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EP 04
+══════════════════════════════════════════ -->
+<div class="ep-panel" id="ep3">
+  <div class="ep-header">
+    <div class="ep-badge">EPISODE 04 · 관세 충격 분석</div>
+    <h1 class="ep-main-title">트럼프 <span class="g">관세 폭탄</span>,<br>인플레이션 재점화?</h1>
+    <div class="ep-meta-row">
+      <div class="ep-meta-item"><span class="dot"></span> 45초 숏폼</div>
+      <div class="ep-meta-item"><span class="dot"></span> 관세 → 물가 → 금리 구조 분석</div>
+    </div>
+    <div class="ep-tags"><span class="ep-tag">#관세</span><span class="ep-tag">#인플레이션</span><span class="ep-tag">#CPI</span><span class="ep-tag">#트럼프경제</span></div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step1)">HOOK</div><div class="tl-step-sec">0–5초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step2)">배경</div><div class="tl-step-sec">5–15초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step3)">핵심</div><div class="tl-step-sec">15–30초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step4)">인사이트</div><div class="tl-step-sec">30–40초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step5)">CTA</div><div class="tl-step-sec">40–45초</div></div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-1"></div><div class="step-header-inner"><span class="step-num">STEP 01</span><span class="step-label step-color-1">🔥 HOOK</span><span class="step-timing">0–5초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📸 화면: 수입 물가 상승 뉴스 헤드라인</div>
+      <p class="script-line bold">"트럼프가 중국에 <span class="hl-r">관세 145%</span>를 때렸습니다."</p>
+      <p class="script-line bold">"이 숫자가 <span class="hl">여러분 장바구니 가격</span>을 올립니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-2"></div><div class="step-header-inner"><span class="step-num">STEP 02</span><span class="step-label step-color-2">📖 배경</span><span class="step-timing">5–15초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📊 화면: 관세 → 수입가 → 소비자가격 플로우차트</div>
+      <p class="script-line">"관세는 세금입니다. 수입품에 세금을 매기면 —"</p>
+      <p class="script-line bold">"기업이 세금만큼 <span class="hl-r">가격을 올립니다.</span>"</p>
+      <p class="script-line">"전자제품, 옷, 식료품 — 미국에서 만들지 않는 건 전부 영향받습니다."</p>
+      <p class="script-line">그 비용은 결국 <span class="hl">소비자인 우리</span>가 냅니다.</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-3"></div><div class="step-header-inner"><span class="step-num">STEP 03</span><span class="step-label step-color-3">⚡ 핵심</span><span class="step-timing">15–30초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">⚡ 화면: CPI 수치 + 금리 연동 설명 자막</div>
+      <p class="script-line bold">"여기서 핵심 모순이 나옵니다."</p>
+      <p class="script-line">"트럼프는 금리 인하를 원한다 — 근데 관세가 물가를 올린다."</p>
+      <p class="script-line bold">"연준이 물가가 오르는데 <span class="hl-r">금리를 내릴 수 있을까요?</span>"</p>
+      <p class="script-line">"절대 못 내립니다. CPI(소비자물가지수)가 다시 오르면 연준은 <span class="hl-r">금리를 올려야</span> 합니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-4"></div><div class="step-header-inner"><span class="step-num">STEP 04</span><span class="step-label step-color-4">💡 인사이트</span><span class="step-timing">30–40초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">💰 화면: 스태그플레이션 키워드 + 1970년대 차트</div>
+      <p class="script-line">"경제학자들이 가장 무서워하는 시나리오 — <span class="hl-r">스태그플레이션</span>입니다."</p>
+      <p class="script-line bold">"경기는 나쁜데 물가는 오르는 상태 — 금리를 올리기도 내리기도 <span class="hl-r">둘 다 어렵습니다.</span>"</p>
+      <p class="script-line">이 상황이 오면 주식·채권·부동산 <span class="hl-r">모두 동시에 흔들립니다.</span></p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-5"></div><div class="step-header-inner"><span class="step-num">STEP 05</span><span class="step-label step-color-5">📣 CTA</span><span class="step-timing">40–45초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">🎬 화면: 다음 편 예고</div>
+      <p class="script-line bold">"이 관세 충격은 한국에도 직접 옵니다."</p>
+      <p class="script-line">"<span class="hl">달러 강세, 원화 약세</span> — 다음 편에서 환율 이야기를 합니다."</p>
+      <p class="script-line sub">저장하고 다음 편 챙기세요 👇</p>
+    </div>
+  </div>
+
+  <div class="ep-footer">
+    <div class="ep-footer-box"><div class="ep-footer-label">THUMBNAIL COPY</div><div class="ep-footer-content">메인: <span class="v">"관세 145%"</span><br>서브: <span class="v">"물가 또 오른다"</span></div></div>
+    <div class="ep-footer-box"><div class="ep-footer-label">UPLOAD TIMING</div><div class="ep-footer-content">업로드: <span class="v">2주차 목요일</span></div></div>
+  </div>
+
+  <div class="ep-nav-btns">
+    <button class="nav-btn" onclick="showEp(2)"><span class="arrow">←</span>EP.03 · 워시 의장 시나리오</button>
+    <button class="nav-btn" onclick="showEp(4)"><span class="arrow">→</span>EP.05 · 달러 강세 환율 영향</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EP 05
+══════════════════════════════════════════ -->
+<div class="ep-panel" id="ep4">
+  <div class="ep-header">
+    <div class="ep-badge">EPISODE 05 · 환율 한국 뷰</div>
+    <h1 class="ep-main-title"><span class="g">달러 강세 시대</span>,<br>원화는 어디로?</h1>
+    <div class="ep-meta-row">
+      <div class="ep-meta-item"><span class="dot"></span> 45초 숏폼</div>
+      <div class="ep-meta-item"><span class="dot"></span> 달러 강세 → 원화 약세 → 수입물가</div>
+    </div>
+    <div class="ep-tags"><span class="ep-tag">#환율</span><span class="ep-tag">#달러강세</span><span class="ep-tag">#원달러</span><span class="ep-tag">#한국경제</span></div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step1)">HOOK</div><div class="tl-step-sec">0–5초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step2)">배경</div><div class="tl-step-sec">5–15초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step3)">핵심</div><div class="tl-step-sec">15–30초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step4)">인사이트</div><div class="tl-step-sec">30–40초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step5)">CTA</div><div class="tl-step-sec">40–45초</div></div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-1"></div><div class="step-header-inner"><span class="step-num">STEP 01</span><span class="step-label step-color-1">🔥 HOOK</span><span class="step-timing">0–5초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📸 화면: 원/달러 환율 1400원 돌파 뉴스</div>
+      <p class="script-line bold">"달러 환율이 <span class="hl-r">1,400원</span>을 넘었습니다."</p>
+      <p class="script-line bold">"미국 금리가 높을수록 — 이 숫자는 <span class="hl-r">더 올라갑니다.</span>"</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-2"></div><div class="step-header-inner"><span class="step-num">STEP 02</span><span class="step-label step-color-2">📖 배경</span><span class="step-timing">5–15초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📊 화면: 금리차 → 자본 흐름 → 환율 플로우</div>
+      <p class="script-line">"미국 금리가 높으면 — 전 세계 돈이 <span class="hl">달러로</span> 몰립니다."</p>
+      <p class="script-line">"달러 수요가 올라가면 → 달러 가치 상승 → 원화 가치 하락."</p>
+      <p class="script-line bold">"달러가 강해질수록 <span class="hl-r">원화는 약해집니다.</span>"</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-3"></div><div class="step-header-inner"><span class="step-num">STEP 03</span><span class="step-label step-color-3">⚡ 핵심</span><span class="step-timing">15–30초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">⚡ 화면: 에너지·식품 수입가격 상승 그래픽</div>
+      <p class="script-line">"한국은 에너지·식료품 대부분을 <span class="hl">수입</span>합니다."</p>
+      <p class="script-line bold">"원화가 약해지면 — 같은 기름, 같은 밀가루인데 <span class="hl-r">더 비싸게</span> 사야 합니다."</p>
+      <p class="script-line">"결국 우리 한국의 물가도 따라 올라갑니다."</p>
+      <p class="script-line">"그러면 한국은행도 <span class="hl-r">금리를 내릴 수가 없습니다.</span>"</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-4"></div><div class="step-header-inner"><span class="step-num">STEP 04</span><span class="step-label step-color-4">💡 인사이트</span><span class="step-timing">30–40초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">💰 화면: 달러 자산 vs 원화 자산 비교</div>
+      <p class="script-line bold">"달러 강세 시대 — 한국 투자자 전략은?"</p>
+      <p class="script-line">"① <span class="hl">달러 예금·달러 ETF</span> — 환차익까지 먹는 구조"</p>
+      <p class="script-line">"② 미국 배당주 — 달러로 배당 받으니 원화 환산 수익 증가"</p>
+      <p class="script-line">"③ 원화 자산 비중은 신중하게 — 특히 수입 비중 높은 기업 주의"</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-5"></div><div class="step-header-inner"><span class="step-num">STEP 05</span><span class="step-label step-color-5">📣 CTA</span><span class="step-timing">40–45초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">🎬 화면: 다음 편 예고</div>
+      <p class="script-line bold">"그럼 금리가 동결되면 주식은 올라갈까요?"</p>
+      <p class="script-line">"<span class="hl">무조건 올라간다</span>고 생각하면 큰일납니다."</p>
+      <p class="script-line sub">다음 편에서 주식과 금리의 진짜 관계를 설명합니다 👇</p>
+    </div>
+  </div>
+
+  <div class="ep-footer">
+    <div class="ep-footer-box"><div class="ep-footer-label">THUMBNAIL COPY</div><div class="ep-footer-content">메인: <span class="v">"달러 1,400원"</span><br>서브: <span class="v">"원화는 계속 떨어진다?"</span></div></div>
+    <div class="ep-footer-box"><div class="ep-footer-label">UPLOAD TIMING</div><div class="ep-footer-content">업로드: <span class="v">3주차 화요일</span></div></div>
+  </div>
+
+  <div class="ep-nav-btns">
+    <button class="nav-btn" onclick="showEp(3)"><span class="arrow">←</span>EP.04 · 관세 인플레이션</button>
+    <button class="nav-btn" onclick="showEp(5)"><span class="arrow">→</span>EP.06 · 금리와 주식의 진짜 관계</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EP 06
+══════════════════════════════════════════ -->
+<div class="ep-panel" id="ep5">
+  <div class="ep-header">
+    <div class="ep-badge">EPISODE 06 · 시장 영향 분석</div>
+    <h1 class="ep-main-title">금리 동결이면<br><span class="g">주식은 올라가는가?</span></h1>
+    <div class="ep-meta-row">
+      <div class="ep-meta-item"><span class="dot"></span> 45초 숏폼</div>
+      <div class="ep-meta-item"><span class="dot"></span> 금리·주식·채권 상관관계</div>
+    </div>
+    <div class="ep-tags"><span class="ep-tag">#주식금리</span><span class="ep-tag">#채권</span><span class="ep-tag">#재테크</span><span class="ep-tag">#투자상식</span></div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step1)">HOOK</div><div class="tl-step-sec">0–5초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step2)">배경</div><div class="tl-step-sec">5–15초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step3)">핵심</div><div class="tl-step-sec">15–30초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step4)">인사이트</div><div class="tl-step-sec">30–40초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step5)">CTA</div><div class="tl-step-sec">40–45초</div></div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-1"></div><div class="step-header-inner"><span class="step-num">STEP 01</span><span class="step-label step-color-1">🔥 HOOK</span><span class="step-timing">0–5초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📸 화면: 금리 동결 뉴스 + 주가 하락 차트 교차</div>
+      <p class="script-line bold">"연준이 금리를 동결했다 — 그런데 <span class="hl-r">주식이 떨어졌습니다.</span>"</p>
+      <p class="script-line bold">"금리 동결 = 주식 상승? <span class="hl-r">이 공식은 틀렸습니다.</span>"</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-2"></div><div class="step-header-inner"><span class="step-num">STEP 02</span><span class="step-label step-color-2">📖 배경</span><span class="step-timing">5–15초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📊 화면: 금리 인하 기대 vs 현실 비교 차트</div>
+      <p class="script-line">"주식은 금리 자체보다 <span class="hl">기대(Expectation)</span>에 반응합니다."</p>
+      <p class="script-line">"시장이 금리 인하를 기대하며 주가를 미리 올려놨는데 —"</p>
+      <p class="script-line bold">"막상 동결 발표가 나오면 <span class="hl-r">실망 매도</span>가 나옵니다."</p>
+      <p class="script-line">이미 가격에 반영됐기 때문입니다 — <span class="hl">Price In</span>이라고 합니다.</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-3"></div><div class="step-header-inner"><span class="step-num">STEP 03</span><span class="step-label step-color-3">⚡ 핵심</span><span class="step-timing">15–30초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">⚡ 화면: 자산군별 금리 영향 표</div>
+      <p class="script-line bold">"금리와 자산의 관계를 정리합니다 —"</p>
+      <p class="script-line">"📈 금리 <span class="hl-r">상승</span> 시 → 채권 하락 / 성장주 하락 / 배당주·은행주 강세 / 달러 강세"</p>
+      <p class="script-line">"📉 금리 <span class="hl">하락</span> 시 → 채권 상승 / 성장주·코인 강세 / 배당주 약세 / 달러 약세"</p>
+      <p class="script-line bold" style="margin-top:8px">"동결은 — 방향 불확실성 그 자체입니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-4"></div><div class="step-header-inner"><span class="step-num">STEP 04</span><span class="step-label step-color-4">💡 인사이트</span><span class="step-timing">30–40초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">💰 화면: 투자 원칙 자막</div>
+      <p class="script-line">"금리 뉴스에 단순 반응하면 <span class="hl-r">항상 늦습니다.</span>"</p>
+      <p class="script-line bold">"중요한 건 뉴스가 아니라 <span class="hl">시장이 뭘 기대하고 있었느냐</span>입니다."</p>
+      <p class="script-line">"금리가 내려도 주식이 빠질 수 있고, 금리가 올라도 주식이 오를 수 있습니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-5"></div><div class="step-header-inner"><span class="step-num">STEP 05</span><span class="step-label step-color-5">📣 CTA</span><span class="step-timing">40–45초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">🎬 화면: 다음 편 시나리오 표 미리보기</div>
+      <p class="script-line bold">"그럼 2025년 하반기 금리, 실제로 어떻게 될까요?"</p>
+      <p class="script-line">"다음 편에서 <span class="hl">3가지 시나리오</span>로 정리해드립니다."</p>
+      <p class="script-line sub">저장해두면 투자 판단에 바로 씁니다 👇</p>
+    </div>
+  </div>
+
+  <div class="ep-footer">
+    <div class="ep-footer-box"><div class="ep-footer-label">THUMBNAIL COPY</div><div class="ep-footer-content">메인: <span class="v">"금리 동결인데"</span><br>서브: <span class="v">"왜 주식이 떨어졌나"</span></div></div>
+    <div class="ep-footer-box"><div class="ep-footer-label">UPLOAD TIMING</div><div class="ep-footer-content">업로드: <span class="v">3주차 목요일</span></div></div>
+  </div>
+
+  <div class="ep-nav-btns">
+    <button class="nav-btn" onclick="showEp(4)"><span class="arrow">←</span>EP.05 · 달러 강세 환율</button>
+    <button class="nav-btn" onclick="showEp(6)"><span class="arrow">→</span>EP.07 · 3가지 금리 시나리오</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EP 07
+══════════════════════════════════════════ -->
+<div class="ep-panel" id="ep6">
+  <div class="ep-header">
+    <div class="ep-badge">EPISODE 07 · 시나리오 총정리</div>
+    <h1 class="ep-main-title">2025년 하반기<br><span class="g">금리 3가지 시나리오</span></h1>
+    <div class="ep-meta-row">
+      <div class="ep-meta-item"><span class="dot"></span> 45초 숏폼</div>
+      <div class="ep-meta-item"><span class="dot"></span> 시나리오별 투자 전략</div>
+    </div>
+    <div class="ep-tags"><span class="ep-tag">#금리시나리오</span><span class="ep-tag">#2025하반기</span><span class="ep-tag">#투자전략</span><span class="ep-tag">#FED</span></div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step1)">HOOK</div><div class="tl-step-sec">0–5초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step2)">배경</div><div class="tl-step-sec">5–15초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step3)">핵심</div><div class="tl-step-sec">15–30초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step4)">인사이트</div><div class="tl-step-sec">30–40초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step5)">CTA</div><div class="tl-step-sec">40–45초</div></div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-1"></div><div class="step-header-inner"><span class="step-num">STEP 01</span><span class="step-label step-color-1">🔥 HOOK</span><span class="step-timing">0–5초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📊 화면: 3갈래 분기 경로 그래픽</div>
+      <p class="script-line bold">"2025년 하반기 금리 — <span class="hl">3가지 길</span>이 있습니다."</p>
+      <p class="script-line bold">"어느 길로 가느냐에 따라 <span class="hl-r">여러분 자산이 달라집니다.</span>"</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-2"></div><div class="step-header-inner"><span class="step-num">STEP 02</span><span class="step-label step-color-2">📖 배경</span><span class="step-timing">5–15초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📌 화면: 현재 금리 수준 + 연준 점도표</div>
+      <p class="script-line">"현재 미국 기준금리 <span class="hl">4.25–4.50%</span>."</p>
+      <p class="script-line">"연준 점도표는 올해 2번 인하를 시사하지만 —"</p>
+      <p class="script-line bold">"트럼프 관세, 케빈 워시 변수가 <span class="hl-r">이 계획을 흔들고 있습니다.</span>"</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-3"></div><div class="step-header-inner"><span class="step-num">STEP 03</span><span class="step-label step-color-3">⚡ 핵심</span><span class="step-timing">15–30초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">⚡ 화면: A·B·C 시나리오 카드 순차 등장</div>
+      <p class="script-line bold">"<span class="hl">시나리오 A — 파월 유임 + 2회 인하</span>"</p>
+      <p class="script-line">확률 35% / 성장주·코인 반등 / 채권 수익 기대 가능</p>
+      <p class="script-line bold" style="margin-top:10px">"<span class="hl-r">시나리오 B — 워시 취임 + 동결·인상</span>"</p>
+      <p class="script-line">확률 40% / 달러 강세 지속 / 예금·배당주 유리 / 성장주 타격</p>
+      <p class="script-line bold" style="margin-top:10px">"<span class="hl-b">시나리오 C — 경기침체 + 긴급 인하</span>"</p>
+      <p class="script-line">확률 25% / 전통 위기 패턴 / 금·안전자산 급등 / 주식 단기 폭락 후 반등</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-4"></div><div class="step-header-inner"><span class="step-num">STEP 04</span><span class="step-label step-color-4">💡 인사이트</span><span class="step-timing">30–40초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">💰 화면: 포트폴리오 분산 조언</div>
+      <p class="script-line bold">"불확실성이 클수록 — <span class="hl">분산이 답</span>입니다."</p>
+      <p class="script-line">"달러 자산 30% + 배당주 30% + 현금(원화) 20% + 금 10% + 성장주 10%"</p>
+      <p class="script-line">"어느 시나리오가 와도 <span class="hl-r">전멸하지 않는 구조</span>를 먼저 만들어야 합니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-5"></div><div class="step-header-inner"><span class="step-num">STEP 05</span><span class="step-label step-color-5">📣 CTA</span><span class="step-timing">40–45초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">🎬 화면: 마지막 편 예고 + 지표 3개 미리보기</div>
+      <p class="script-line bold">"그럼 어떤 지표를 보면 금리 방향을 미리 알 수 있을까요?"</p>
+      <p class="script-line">"마지막 편에서 <span class="hl">딱 3가지</span>만 알려드립니다."</p>
+      <p class="script-line sub">시리즈 마지막 편 — 저장 필수입니다 👇</p>
+    </div>
+  </div>
+
+  <div class="ep-footer">
+    <div class="ep-footer-box"><div class="ep-footer-label">THUMBNAIL COPY</div><div class="ep-footer-content">메인: <span class="v">"2025 하반기 금리"</span><br>서브: <span class="v">"3가지 시나리오 총정리"</span></div></div>
+    <div class="ep-footer-box"><div class="ep-footer-label">UPLOAD TIMING</div><div class="ep-footer-content">업로드: <span class="v">4주차 화요일</span></div></div>
+  </div>
+
+  <div class="ep-nav-btns">
+    <button class="nav-btn" onclick="showEp(5)"><span class="arrow">←</span>EP.06 · 금리와 주식의 관계</button>
+    <button class="nav-btn" onclick="showEp(7)"><span class="arrow">→</span>EP.08 · 피날레 · 3가지 지표</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EP 08
+══════════════════════════════════════════ -->
+<div class="ep-panel" id="ep7">
+  <div class="ep-header">
+    <div class="ep-badge">EPISODE 08 · 시즌 피날레</div>
+    <h1 class="ep-main-title">결론: <span class="g">금리를 예측하는 법</span><br>— 3가지 지표만 봐라</h1>
+    <div class="ep-meta-row">
+      <div class="ep-meta-item"><span class="dot"></span> 45초 숏폼</div>
+      <div class="ep-meta-item"><span class="dot"></span> CPI · 고용 · 점도표 마스터편</div>
+    </div>
+    <div class="ep-tags"><span class="ep-tag">#CPI</span><span class="ep-tag">#점도표</span><span class="ep-tag">#금리예측</span><span class="ep-tag">#시즌피날레</span></div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step1)">HOOK</div><div class="tl-step-sec">0–5초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step2)">배경</div><div class="tl-step-sec">5–15초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step3)">핵심</div><div class="tl-step-sec">15–30초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step4)">인사이트</div><div class="tl-step-sec">30–40초</div></div>
+    <div class="tl-step"><div class="tl-step-name" style="color:var(--step5)">CTA</div><div class="tl-step-sec">40–45초</div></div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-1"></div><div class="step-header-inner"><span class="step-num">STEP 01</span><span class="step-label step-color-1">🔥 HOOK</span><span class="step-timing">0–5초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📸 화면: 경제 지표 화면 + "3가지만" 자막 강조</div>
+      <p class="script-line bold">"금리 예측하려고 뉴스 100개 봤습니까?"</p>
+      <p class="script-line bold">"<span class="hl">딱 3가지</span>만 보면 됩니다. 오늘 다 알려드립니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-2"></div><div class="step-header-inner"><span class="step-num">STEP 02</span><span class="step-label step-color-2">📖 배경</span><span class="step-timing">5–15초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">📊 화면: 연준 의사결정 구조 도식</div>
+      <p class="script-line">"연준이 금리를 올리거나 내릴 때 보는 데이터가 있습니다."</p>
+      <p class="script-line">"그 데이터를 우리가 먼저 보면 — <span class="hl">연준보다 한발 앞서</span> 예측할 수 있습니다."</p>
+      <p class="script-line bold">"7편에 걸쳐 배운 내용을 오늘 <span class="hl">3가지 지표</span>로 압축합니다."</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-3"></div><div class="step-header-inner"><span class="step-num">STEP 03</span><span class="step-label step-color-3">⚡ 핵심</span><span class="step-timing">15–30초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">⚡ 화면: 3가지 지표 카드 순차 등장</div>
+      <p class="script-line bold">"<span class="hl">지표 ① CPI — 소비자물가지수</span>"</p>
+      <p class="script-line">매월 발표 / CPI가 2% 이상 → 금리 동결 or 인상 압력 / 2% 이하 → 인하 신호</p>
+
+      <p class="script-line bold" style="margin-top:12px">"<span class="hl">지표 ② 비농업 고용지수 (NFP)</span>"</p>
+      <p class="script-line">매월 첫째 금요일 발표 / 고용 강하면 → 경기 좋다 → 금리 내릴 이유 없음 / 고용 약하면 → 인하 명분 생김</p>
+
+      <p class="script-line bold" style="margin-top:12px">"<span class="hl">지표 ③ 연준 점도표 (Dot Plot)</span>"</p>
+      <p class="script-line">분기별 공개 / 연준 위원들의 금리 전망 평균치 / 점이 내려가면 인하 시사 / 점이 올라가면 인상 시사</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-4"></div><div class="step-header-inner"><span class="step-num">STEP 04</span><span class="step-label step-color-4">💡 인사이트</span><span class="step-timing">30–40초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">💰 화면: 3지표 모니터링 캘린더</div>
+      <p class="script-line bold">"이 3가지를 매달 체크하면 —"</p>
+      <p class="script-line">"금리 뉴스에 <span class="hl-r">흔들리지 않고</span> 스스로 판단할 수 있습니다."</p>
+      <p class="script-line">"CPI 오름 + 고용 강함 + 점도표 상향 → <span class="hl-r">금리 인상 시나리오</span>"</p>
+      <p class="script-line">"CPI 내림 + 고용 약함 + 점도표 하향 → <span class="hl">금리 인하 시나리오</span>"</p>
+      <p class="script-line bold" style="margin-top:8px">"이게 전부입니다. 이걸 아는 사람이 <span class="hl">시장을 이깁니다.</span>"</p>
+    </div>
+  </div>
+
+  <div class="step-block">
+    <div class="step-header"><div class="step-bar bar-5"></div><div class="step-header-inner"><span class="step-num">STEP 05</span><span class="step-label step-color-5">📣 CTA</span><span class="step-timing">40–45초</span></div></div>
+    <div class="step-body">
+      <div class="script-direction">🎬 화면: 시즌 1 총결산 + 시즌 2 티저</div>
+      <p class="script-line bold">"캐빈워시 시리즈 8편, 여기서 마칩니다."</p>
+      <p class="script-line">"처음 보셨다면 EP.01부터 — 저장해두면 <span class="hl">8편 전부 무료 경제 강의</span>입니다."</p>
+      <p class="script-line">"시즌 2에서는 <span class="hl">트럼프 감세 정책과 부채한도</span> 이야기를 합니다."</p>
+      <p class="script-line sub">구독 + 알림 설정 — 다음 시즌 놓치지 마세요 👇</p>
+    </div>
+  </div>
+
+  <div class="ep-footer">
+    <div class="ep-footer-box"><div class="ep-footer-label">THUMBNAIL COPY</div><div class="ep-footer-content">메인: <span class="v">"금리 예측"</span><br>서브: <span class="v">"이 3가지만 보면 된다"</span><br>배지: EP.08 · 시즌 피날레</div></div>
+    <div class="ep-footer-box"><div class="ep-footer-label">UPLOAD TIMING</div><div class="ep-footer-content">업로드: <span class="v">4주차 목요일</span><br>피날레 → 커뮤니티 시즌2 예고 함께 발행</div></div>
+  </div>
+
+  <div class="ep-nav-btns">
+    <button class="nav-btn" onclick="showEp(6)"><span class="arrow">←</span>EP.07 · 3가지 시나리오</button>
+    <button class="nav-btn disabled"><span class="arrow">✓</span>시리즈 완결</button>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+let current = 0;
+
+function showEp(idx) {
+  document.querySelectorAll('.ep-panel').forEach((p, i) => {
+    p.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.ep-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+  });
+  current = idx;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // scroll ep-nav button into view
+  const btn = document.querySelectorAll('.ep-btn')[idx];
+  btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+</script>
+</body>
+</html>
