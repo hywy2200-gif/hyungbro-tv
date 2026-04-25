@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>형브로TV | 캐빈워시 금리예측 시리즈 기획서</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #F0D080;
+    --gold-dim: #7A6020;
+    --black: #0A0A0A;
+    --dark: #111111;
+    --dark2: #181818;
+    --white: #F5F5F0;
+    --gray: #888;
+    --red-alert: #E84040;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Noto Sans KR', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 20px;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,168,76,0.12) 0%, transparent 70%),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 60px,
+        rgba(201,168,76,0.03) 60px,
+        rgba(201,168,76,0.03) 61px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 60px,
+        rgba(201,168,76,0.03) 60px,
+        rgba(201,168,76,0.03) 61px
+      );
+  }
+
+  .header-tag {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+    padding: 6px 18px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .channel-name {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(13px, 2vw, 18px);
+    letter-spacing: 6px;
+    color: var(--gold-dim);
+    margin-bottom: 20px;
+    animation: fadeUp 0.7s ease 0.1s both;
+  }
+
+  .main-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: clamp(38px, 8vw, 88px);
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+    animation: fadeUp 0.7s ease 0.2s both;
+  }
+
+  .main-title .gold { color: var(--gold); }
+  .main-title .accent { 
+    -webkit-text-stroke: 1px var(--gold);
+    color: transparent;
+  }
+
+  .sub-title {
+    font-size: clamp(14px, 2.5vw, 20px);
+    color: var(--gray);
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 48px;
+    animation: fadeUp 0.7s ease 0.3s both;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.7s ease 0.4s both;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--gold);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+
+  .divider-gold {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 48px auto;
+  }
+
+  /* ── SECTION ── */
+  section {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 60px 24px;
+  }
+
+  .section-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gold-dim);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: clamp(26px, 4vw, 42px);
+    line-height: 1.2;
+    margin-bottom: 32px;
+  }
+
+  .section-title .g { color: var(--gold); }
+
+  /* ── CONCEPT BOX ── */
+  .concept-box {
+    border: 1px solid var(--gold-dim);
+    padding: 32px;
+    position: relative;
+    background: linear-gradient(135deg, rgba(201,168,76,0.05) 0%, transparent 60%);
+    margin-bottom: 24px;
+  }
+
+  .concept-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 40px; height: 2px;
+    background: var(--gold);
+  }
+
+  .concept-box::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 40px; height: 2px;
+    background: var(--gold);
+  }
+
+  .concept-quote {
+    font-size: clamp(17px, 2.5vw, 22px);
+    font-weight: 700;
+    line-height: 1.6;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+
+  .concept-desc {
+    font-size: 14px;
+    line-height: 1.9;
+    color: #aaa;
+    font-weight: 300;
+  }
+
+  /* ── EPISODE CARDS ── */
+  .episode-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .ep-card {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    border: 1px solid #222;
+    transition: border-color 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ep-card:hover {
+    border-color: var(--gold-dim);
+  }
+
+  .ep-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.03));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .ep-card:hover::after { opacity: 1; }
+
+  .ep-num {
+    background: var(--dark2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 10px;
+    border-right: 1px solid #222;
+  }
+
+  .ep-num span {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    color: var(--gold-dim);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .ep-num strong {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--gold);
+  }
+
+  .ep-body {
+    padding: 22px 24px;
+  }
+
+  .ep-hook {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold-dim);
+    margin-bottom: 8px;
+    font-family: 'Orbitron', monospace;
+  }
+
+  .ep-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: clamp(16px, 2.5vw, 21px);
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+
+  .ep-desc {
+    font-size: 13px;
+    color: #888;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  .ep-meta {
+    display: flex;
+    gap: 16px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .ep-tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border: 1px solid #333;
+    color: #777;
+    letter-spacing: 1px;
+  }
+
+  .ep-tag.hot {
+    border-color: var(--red-alert);
+    color: var(--red-alert);
+  }
+
+  .ep-tag.gold {
+    border-color: var(--gold-dim);
+    color: var(--gold);
+  }
+
+  /* ── FORMAT BOX ── */
+  .format-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border: 1px solid #222;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 640px) {
+    .format-row { grid-template-columns: 1fr 1fr; }
+    .ep-card { grid-template-columns: 60px 1fr; }
+    .header-stats { gap: 24px; }
+  }
+
+  .fmt-step {
+    padding: 20px 16px;
+    border-right: 1px solid #222;
+    text-align: center;
+    position: relative;
+  }
+
+  .fmt-step:last-child { border-right: none; }
+
+  .fmt-step-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    color: var(--gold-dim);
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+
+  .fmt-step-name {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 15px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .fmt-step-desc {
+    font-size: 11px;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  /* ── KPI TABLE ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: #222;
+    border: 1px solid #222;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 560px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .format-row { grid-template-columns: 1fr 1fr 1fr; }
+  }
+
+  .kpi-cell {
+    background: var(--black);
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .kpi-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .kpi-label {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  /* ── HASHTAG ── */
+  .hashtag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .hashtag {
+    font-size: 12px;
+    color: var(--gold-dim);
+    border: 1px solid #2a2a2a;
+    padding: 5px 12px;
+    letter-spacing: 1px;
+    background: #111;
+  }
+
+  /* ── THUMB CONCEPT ── */
+  .thumb-card {
+    background: var(--dark2);
+    border: 1px solid #222;
+    padding: 28px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .thumb-preview {
+    width: 120px;
+    flex-shrink: 0;
+    aspect-ratio: 9/16;
+    background: #000;
+    border: 1px solid var(--gold-dim);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12px 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .thumb-preview::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 20%, rgba(201,168,76,0.15) 0%, transparent 70%);
+  }
+
+  .thumb-ep-tag {
+    font-family: 'Orbitron', monospace;
+    font-size: 7px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .thumb-main-text {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.3;
+    color: white;
+    position: relative;
+    margin-bottom: 8px;
+  }
+
+  .thumb-main-text .g { color: var(--gold); }
+
+  .thumb-sub {
+    font-size: 8px;
+    color: #888;
+    position: relative;
+  }
+
+  .thumb-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-dim));
+  }
+
+  .thumb-desc {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .thumb-desc h4 {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 16px;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .thumb-rule {
+    font-size: 13px;
+    color: #888;
+    line-height: 2;
+    font-weight: 300;
+  }
+
+  .thumb-rule span {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid #1a1a1a;
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 22px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .footer-sub {
+    font-size: 12px;
+    color: #444;
+    letter-spacing: 3px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    background: var(--dark2);
+    border-top: 1px solid var(--gold-dim);
+    border-bottom: 1px solid var(--gold-dim);
+    overflow: hidden;
+    padding: 10px 0;
+  }
+
+  .ticker {
+    display: flex;
+    gap: 0;
+    animation: ticker 28s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker span {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    padding: 0 40px;
+    color: var(--gold-dim);
+  }
+
+  .ticker span.hot {
+    color: var(--red-alert);
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .sep { 
+    display: inline-block; 
+    width: 1px; 
+    height: 10px; 
+    background: var(--gold-dim); 
+    margin: 0 20px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-tag">SERIES PLANNING DOCUMENT v1.0</div>
+  <div class="channel-name">형브로TV · 형브로TV · 형브로TV</div>
+  <h1 class="main-title">
+    <span class="gold">캐빈워시</span><br>
+    <span class="accent">금리예측</span><br>
+    시리즈
+  </h1>
+  <p class="sub-title">트럼프 2기 취임 후 연준은 어디로 가는가</p>
+  <div class="header-stats">
+    <div class="stat-item">
+      <span class="stat-num">8</span>
+      <div class="stat-label">총 에피소드</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">45"</span>
+      <div class="stat-label">편당 분량</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">2025</span>
+      <div class="stat-label">방영 시즌</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">Shorts</span>
+      <div class="stat-label">포맷</div>
+    </div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>FED RATE WATCH</span><span class="sep"></span>
+    <span class="hot">TRUMP 2기 취임</span><span class="sep"></span>
+    <span>금리 인하 vs 동결</span><span class="sep"></span>
+    <span>인플레이션 재점화</span><span class="sep"></span>
+    <span>달러 강세 시대</span><span class="sep"></span>
+    <span>캐빈워시 시리즈</span><span class="sep"></span>
+    <span>형브로TV</span><span class="sep"></span>
+    <span>FED RATE WATCH</span><span class="sep"></span>
+    <span class="hot">TRUMP 2기 취임</span><span class="sep"></span>
+    <span>금리 인하 vs 동결</span><span class="sep"></span>
+    <span>인플레이션 재점화</span><span class="sep"></span>
+    <span>달러 강세 시대</span><span class="sep"></span>
+    <span>캐빈워시 시리즈</span><span class="sep"></span>
+    <span>형브로TV</span><span class="sep"></span>
+  </div>
+</div>
+
+<!-- 시리즈 개요 -->
+<section class="reveal">
+  <div class="section-label">SERIES CONCEPT</div>
+  <h2 class="section-title">왜 <span class="g">지금</span> 이 시리즈인가</h2>
+  <div class="concept-box">
+    <p class="concept-quote">
+      "트럼프가 돌아왔다. 연준 의장은 캐빈 워시로 바뀔 수도 있다.<br>
+      그러면 금리는 내려가는가, 아니면 또 오르는가?"
+    </p>
+    <p class="concept-desc">
+      트럼프 2기 행정부 출범과 함께 연준(Fed) 독립성 논란, 파월 압박, 차기 의장 후보로 거론되는 케빈 워시(Kevin Warsh)까지 — 금리 방향성이 전 세계 투자자의 최대 관심사가 됐다. 형브로TV는 이 복잡한 이슈를 20-30대가 이해할 수 있도록 45초 숏폼 8부작 시리즈로 정리한다. 매 편은 독립적으로 소비되지만, 전체 흐름상 "케빈 워시가 의장이 되면 어떻게 되는가?"라는 하나의 질문을 향해 수렴한다.
+    </p>
+  </div>
+  <div class="concept-box">
+    <p class="concept-quote" style="font-size:16px;">🎯 타깃 시청자</p>
+    <p class="concept-desc">
+      📌 20-30대 직장인 · 재테크 입문자 · 경제 뉴스는 알고 싶지만 어렵다고 느끼는 층<br>
+      📌 주식·부동산 투자에 관심 있는 MZ세대<br>
+      📌 트럼프 이슈를 팔로우하는 시사 관심층
+    </p>
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- 시리즈 포맷 -->
+<section class="reveal">
+  <div class="section-label">VIDEO FORMAT</div>
+  <h2 class="section-title">편당 <span class="g">5단계</span> 구조</h2>
+  <div class="format-row">
+    <div class="fmt-step">
+      <div class="fmt-step-num">STEP 01</div>
+      <div class="fmt-step-name">HOOK</div>
+      <div class="fmt-step-desc">충격적 수치·질문으로 3초 이내 시선 장악</div>
+    </div>
+    <div class="fmt-step">
+      <div class="fmt-step-num">STEP 02</div>
+      <div class="fmt-step-name">배경</div>
+      <div class="fmt-step-desc">왜 이 이슈가 중요한지 맥락 압축 설명</div>
+    </div>
+    <div class="fmt-step">
+      <div class="fmt-step-num">STEP 03</div>
+      <div class="fmt-step-name">핵심</div>
+      <div class="fmt-step-desc">케빈 워시·연준·트럼프 삼각관계 핵심 전달</div>
+    </div>
+    <div class="fmt-step">
+      <div class="fmt-step-num">STEP 04</div>
+      <div class="fmt-step-name">인사이트</div>
+      <div class="fmt-step-desc">시청자 투자·생활에 미치는 실질적 영향</div>
+    </div>
+    <div class="fmt-step">
+      <div class="fmt-step-num">STEP 05</div>
+      <div class="fmt-step-name">CTA</div>
+      <div class="fmt-step-desc">다음 편 예고 + 좋아요/저장 유도</div>
+    </div>
+  </div>
+</section>
+
+<!-- 에피소드 라인업 -->
+<section class="reveal">
+  <div class="section-label">EPISODE LINEUP</div>
+  <h2 class="section-title"><span class="g">8부작</span> 에피소드 기획</h2>
+  <div class="episode-grid">
+
+    <div class="ep-card">
+      <div class="ep-num"><span>EP</span><strong>01</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">SERIES OPENER · 파일럿</div>
+        <div class="ep-title">트럼프가 돌아왔다, 금리도 흔들린다</div>
+        <div class="ep-desc">트럼프 2기 취임 직후 시장 반응과 연준 독립성 논란 개요. 왜 대통령이 금리에 관여하면 안 되는지, 역사적 사례로 설명.</div>
+        <div class="ep-meta">
+          <span class="ep-tag hot">시리즈 입문</span>
+          <span class="ep-tag">연준 독립성</span>
+          <span class="ep-tag">트럼프 2기</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ep-card">
+      <div class="ep-num"><span>EP</span><strong>02</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">인물 집중 분석</div>
+        <div class="ep-title">캐빈 워시, 그는 누구인가?</div>
+        <div class="ep-desc">케빈 워시(Kevin Warsh)의 커리어, 매파적 성향, 트럼프와의 관계. "파월의 후임"으로 지목되는 이유를 3가지로 압축.</div>
+        <div class="ep-meta">
+          <span class="ep-tag gold">핵심 인물편</span>
+          <span class="ep-tag">케빈 워시</span>
+          <span class="ep-tag">연준 의장</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ep-card">
+      <div class="ep-num"><span>EP</span><strong>03</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">매파 vs 비둘기파</div>
+        <div class="ep-title">워시가 의장이 되면 금리는 오른다?</div>
+        <div class="ep-desc">케빈 워시의 과거 발언·정책 이력 기반으로 금리 방향성 예측. 매파 의장 하에서 투자자가 주의해야 할 시나리오 제시.</div>
+        <div class="ep-meta">
+          <span class="ep-tag hot">투자 직결</span>
+          <span class="ep-tag">매파 정책</span>
+          <span class="ep-tag">시나리오</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ep-card">
+      <div class="ep-num"><span>EP</span><strong>04</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">관세 충격 분석</div>
+        <div class="ep-title">트럼프 관세 폭탄, 인플레이션 재점화?</div>
+        <div class="ep-desc">트럼프 고율 관세 정책이 물가에 미치는 구조적 영향. 인플레이션이 다시 튀면 연준은 금리를 내릴 수 없다 — 핵심 모순 설명.</div>
+        <div class="ep-meta">
+          <span class="ep-tag hot">관세 이슈</span>
+          <span class="ep-tag">인플레이션</span>
+          <span class="ep-tag">CPI</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ep-card">
+      <div class="ep-num"><span>EP</span><strong>05</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">달러 & 환율</div>
+        <div class="ep-title">달러 강세 시대, 원화는 어디로?</div>
+        <div class="ep-desc">미국 금리 유지 혹은 인상 → 달러 강세 → 원/달러 환율 상승 → 수입 물가 자극. 한국 투자자 관점의 실질적 영향 분석.</div>
+        <div class="ep-meta">
+          <span class="ep-tag gold">한국 뷰</span>
+          <span class="ep-tag">환율</span>
+          <span class="ep-tag">달러 인덱스</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ep-card">
+      <div class="ep-num"><span>EP</span><strong>06</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">시장 영향 분석</div>
+        <div class="ep-title">금리 동결이면 주식은 올라가는가?</div>
+        <div class="ep-desc">금리와 주식·채권·부동산의 상관관계를 MZ세대 언어로 설명. "금리 동결 = 주식 호재"라는 단순 공식이 왜 항상 맞지 않는지.</div>
+        <div class="ep-meta">
+          <span class="ep-tag">주식·채권</span>
+          <span class="ep-tag">금리 상관관계</span>
+          <span class="ep-tag">재테크</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ep-card">
+      <div class="ep-num"><span>EP</span><strong>07</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">시나리오 3분기</div>
+        <div class="ep-title">2025년 하반기 금리 3가지 시나리오</div>
+        <div class="ep-desc">① 파월 유임 + 동결 ② 워시 취임 + 인상 ③ 경기침체 + 긴급 인하 — 3가지 시나리오별 투자 전략을 테이블 형식으로 압축 제시.</div>
+        <div class="ep-meta">
+          <span class="ep-tag gold">시나리오 정리</span>
+          <span class="ep-tag hot">투자 전략</span>
+          <span class="ep-tag">2025 하반기</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ep-card">
+      <div class="ep-num"><span>EP</span><strong>08</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">시즌 피날레</div>
+        <div class="ep-title">결론: 금리를 예측하는 법 — 3가지 지표만 봐라</div>
+        <div class="ep-desc">CPI·고용·연준 점도표(Dot Plot). 이 3가지만 추적하면 금리 방향을 먼저 읽을 수 있다. 시리즈 전체 내용을 압축 총정리 + 시즌2 예고.</div>
+        <div class="ep-meta">
+          <span class="ep-tag gold">총결산</span>
+          <span class="ep-tag">CPI 고용 점도표</span>
+          <span class="ep-tag">시즌2 예고</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- KPI -->
+<section class="reveal">
+  <div class="section-label">TARGET KPI</div>
+  <h2 class="section-title">시리즈 <span class="g">성과 목표</span></h2>
+  <div class="kpi-grid">
+    <div class="kpi-cell">
+      <span class="kpi-val">5만+</span>
+      <div class="kpi-label">시리즈 평균<br>조회수 목표</div>
+    </div>
+    <div class="kpi-cell">
+      <span class="kpi-val">60%+</span>
+      <div class="kpi-label">영상 완료율<br>(45초 기준)</div>
+    </div>
+    <div class="kpi-cell">
+      <span class="kpi-val">5%+</span>
+      <div class="kpi-label">좋아요·저장<br>인게이지먼트율</div>
+    </div>
+    <div class="kpi-cell">
+      <span class="kpi-val">주 2회</span>
+      <div class="kpi-label">업로드 주기<br>(화·목 권장)</div>
+    </div>
+    <div class="kpi-cell">
+      <span class="kpi-val">4주</span>
+      <div class="kpi-label">시리즈 완결<br>목표 기간</div>
+    </div>
+    <div class="kpi-cell">
+      <span class="kpi-val">+30%</span>
+      <div class="kpi-label">구독자 증가<br>시리즈 기간 내</div>
+    </div>
+  </div>
+</section>
+
+<!-- 썸네일 전략 -->
+<section class="reveal">
+  <div class="section-label">THUMBNAIL STRATEGY</div>
+  <h2 class="section-title">썸네일 <span class="g">공통 가이드</span></h2>
+  <div class="thumb-card">
+    <div class="thumb-preview">
+      <div class="thumb-ep-tag">EP.01 · 캐빈워시 시리즈</div>
+      <div class="thumb-main-text">트럼프가<br>돌아왔다<br><span class="g">금리는?</span></div>
+      <div class="thumb-sub">형브로TV</div>
+      <div class="thumb-bar"></div>
+    </div>
+    <div class="thumb-desc">
+      <h4>썸네일 공통 규칙</h4>
+      <div class="thumb-rule">
+        <span>배경</span> — 검정 또는 다크 그라디언트<br>
+        <span>텍스트</span> — 흰색 + 골드 포인트 2줄 이내<br>
+        <span>상단 좌</span> — "EP.N · 캐빈워시 시리즈" 배지<br>
+        <span>하단 우</span> — 형브로TV 채널 로고<br>
+        <span>키워드</span> — 금리, 연준, 워시, 트럼프 중 1개<br>
+        <span>이모지 금지</span> — 숫자·기호만 포인트 사용<br>
+        <span>폰트</span> — Black Han Sans (본문) + Orbitron (수치)
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 해시태그 -->
+<section class="reveal">
+  <div class="section-label">HASHTAG BANK</div>
+  <h2 class="section-title">공통 <span class="g">해시태그</span></h2>
+  <p style="font-size:13px; color:#666; margin-bottom:8px;">모든 에피소드에 공통 적용 (최대 5개 권장)</p>
+  <div class="hashtag-row">
+    <div class="hashtag">#캐빈워시시리즈</div>
+    <div class="hashtag">#금리예측</div>
+    <div class="hashtag">#트럼프경제</div>
+    <div class="hashtag">#연준금리</div>
+    <div class="hashtag">#케빈워시</div>
+    <div class="hashtag">#경제쇼츠</div>
+    <div class="hashtag">#형브로TV</div>
+    <div class="hashtag">#재테크</div>
+    <div class="hashtag">#미국금리</div>
+    <div class="hashtag">#FED</div>
+  </div>
+</section>
+
+<div class="divider-gold"></div>
+
+<!-- 제작 일정 -->
+<section class="reveal">
+  <div class="section-label">PRODUCTION SCHEDULE</div>
+  <h2 class="section-title">4주 <span class="g">제작·업로드</span> 일정</h2>
+  <div class="episode-grid">
+    <div class="ep-card">
+      <div class="ep-num" style="background:#111;"><span>WK</span><strong style="font-size:16px;">01</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">1주차</div>
+        <div class="ep-title">EP01 + EP02 제작 · 업로드</div>
+        <div class="ep-desc">스크립트 완성 → Vrew 편집 → 썸네일 제작 → 화요일·목요일 업로드. 시리즈 오프너로 초기 알고리즘 반응 테스트.</div>
+      </div>
+    </div>
+    <div class="ep-card">
+      <div class="ep-num" style="background:#111;"><span>WK</span><strong style="font-size:16px;">02</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">2주차</div>
+        <div class="ep-title">EP03 + EP04 — 핵심 논쟁편</div>
+        <div class="ep-desc">워시 의장 시나리오 + 관세 인플레이션. 가장 논쟁적인 내용 → 댓글 유도 최적화. 커뮤니티 포스트로 투표 진행.</div>
+      </div>
+    </div>
+    <div class="ep-card">
+      <div class="ep-num" style="background:#111;"><span>WK</span><strong style="font-size:16px;">03</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">3주차</div>
+        <div class="ep-title">EP05 + EP06 — 한국 투자자 뷰</div>
+        <div class="ep-desc">환율·주식 영향편으로 국내 투자자에게 직접 와닿는 콘텐츠. 저장율 높이기 위한 "요약 카드" 텍스트 활용.</div>
+      </div>
+    </div>
+    <div class="ep-card">
+      <div class="ep-num" style="background:#111;"><span>WK</span><strong style="font-size:16px;">04</strong></div>
+      <div class="ep-body">
+        <div class="ep-hook">4주차 · 피날레</div>
+        <div class="ep-title">EP07 + EP08 — 총결산 & 시즌2 예고</div>
+        <div class="ep-desc">3가지 시나리오 정리 + 지표 추적법 마스터편. 시즌2 주제 예고로 구독·알림 CTA 강화. 시리즈 성과 분석 후 다음 시리즈 기획.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">형브로TV</div>
+  <div class="footer-sub">캐빈워시 금리예측 시리즈 기획서 · 2025</div>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
